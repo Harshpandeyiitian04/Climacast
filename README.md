@@ -1,16 +1,89 @@
-# React + Vite
+# Climacast - Weather Analytics Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, feature-rich weather analytics dashboard built with React, Redux, and Vite that provides detailed weather information and forecasts with interactive visualizations.
 
-Currently, two official plugins are available:
+🌐 **Live Demo**: [https://climacast-vtnt.vercel.app/](https://climacast-vtnt.vercel.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- 🌡️ Real-time weather data display
+- 📊 Interactive weather charts and visualizations
+  - Temperature trends
+  - Humidity and pressure analysis
+  - Precipitation forecasts
+  - Wind conditions
+- 🔍 City search functionality
+- ⭐ Favorite locations management
+- 📱 Responsive design
+- 📈 Detailed weather metrics:
+  - Hourly forecasts
+  - Daily forecasts
+  - Humidity and pressure data
+  - Wind speed and direction
+- ⚡ Efficient data caching
+- ⚙️ Customizable settings panel
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Technology Stack
 
-## Expanding the ESLint configuration
+- **Frontend Framework**: React
+- **State Management**: Redux with Redux Toolkit
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **Charts**: React charting libraries
+- **API Integration**: Custom weather API service
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Project Structure
+
+```
+├── config/             # Configuration files
+├── public/            # Public assets
+├── redux/             # Redux store and slices
+├── services/          # API services
+├── src/
+│   ├── components/    # React components
+│   │   ├── charts/    # Chart components
+│   │   ├── common/    # Shared components
+│   │   ├── dashboard/ # Dashboard components
+│   │   ├── layout/    # Layout components
+│   │   └── settings/  # Settings components
+│   └── pages/         # Page components
+└── utils/             # Utility functions
+```
+
+## Getting Started
+
+1. Clone the repository:
+```bash
+git clone https://github.com/Harshpandeyiitian04/Climacast.git
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+Create a `.env` file with your API keys and configuration.
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+Made with ❤️ by Harsh Pandey
