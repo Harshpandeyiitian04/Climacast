@@ -8,7 +8,6 @@ function loadFavoritesFromStorage() {
     console.error("error in favorites:", error);
     return [];
   }
-
 }
 function saveFavoritesToStorage(favorites) {
   try {

@@ -80,7 +80,6 @@ const weatherSlice = createSlice({
       });
 
     builder
-      // weatherslice.js → पूरी तरह सही करो
       .addCase(fetchForecast.pending, (state, action) => {
         const { city, days = 7 } = action.meta.arg;
         const key = `${city.toLowerCase()}-${days}`;
