@@ -1,0 +1,98 @@
+.error-display {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  display: flex;
+  gap: 1rem;
+  align-items: start;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.error-display.retryable {
+  background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
+}
+
+.error-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.error-content {
+  flex: 1;
+}
+
+.error-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.error-details {
+  margin: 0 0 1rem 0;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.error-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.error-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid white;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+
+.retry-btn {
+  background: white;
+  color: #fb8c00;
+}
+
+.retry-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dismiss-btn {
+  background: transparent;
+  color: white;
+}
+
+.dismiss-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 640px) {
+  .error-display {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .error-icon {
+    font-size: 2.5rem;
+  }
+
+  .error-actions {
+    justify-content: center;
+  }
+}
