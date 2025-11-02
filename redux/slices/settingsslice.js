@@ -3,7 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 function loadSettingsFromStorage() {
   try {
     const saved = localStorage.getItem("userSettings");
-    return saved ? JSON.parse(saved) : { temperatureUnit: "celsius", theme: "light" };
+    return saved
+      ? JSON.parse(saved)
+      : { temperatureUnit: "celsius", theme: "light" };
   } catch (error) {
     console.error("Error loading settings:", error);
     return { temperatureUnit: "celsius", theme: "light" };
@@ -28,23 +30,23 @@ const settingsSlice = createSlice({
     toggleTemperatureUnit: (state) => {
       state.temperatureUnit =
         state.temperatureUnit === "celsius" ? "fahrenheit" : "celsius";
-      saveSettingsToStorage({ 
+      saveSettingsToStorage({
         temperatureUnit: state.temperatureUnit,
-        theme: state.theme 
+        theme: state.theme,
       });
     },
     setTemperatureUnit: (state, action) => {
       state.temperatureUnit = action.payload;
-      saveSettingsToStorage({ 
+      saveSettingsToStorage({
         temperatureUnit: state.temperatureUnit,
-        theme: state.theme 
+        theme: state.theme,
       });
     },
     setTheme: (state, action) => {
       state.theme = action.payload;
-      saveSettingsToStorage({ 
+      saveSettingsToStorage({
         temperatureUnit: state.temperatureUnit,
-        theme: state.theme 
+        theme: state.theme,
       });
     },
   },

@@ -45,9 +45,9 @@ function CityCard({ cityName, weatherData, forecastData }) {
   };
 
   const handleCardClick = () => {
-    dispatch(setSelectedCity(cityName));
-    navigate(`/city/${cityName}`);
-  };
+  const cityName = weatherData.data.location.name; // e.g., "London"
+  navigate(`/city/${encodeURIComponent(cityName)}`);
+};
 
   const getLastUpdated = () => {
     if (weatherData.lastUpdated) {

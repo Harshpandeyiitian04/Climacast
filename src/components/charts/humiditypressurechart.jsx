@@ -26,19 +26,23 @@ const HumidityPressureChart = React.memo(({ hourlyData }) => {
     );
   }
 
-  const chartData = useMemo(() => hourlyData.map((hour) => ({
-    time: new Date(hour.time).toLocaleTimeString("en-US", {
-      hour: "numeric",
-      hour12: true,
-    }),
-    humidity: hour.humidity || 0,
-    pressure: hour.pressure_mb || 0,
-    fullTime: new Date(hour.time).toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-    }),
-  })), [hourlyData]);
+  const chartData = useMemo(
+    () =>
+      hourlyData.map((hour) => ({
+        time: new Date(hour.time).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          hour12: true,
+        }),
+        humidity: hour.humidity || 0,
+        pressure: hour.pressure_mb || 0,
+        fullTime: new Date(hour.time).toLocaleString("en-US", {
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+        }),
+      })),
+    [hourlyData]
+  );
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {

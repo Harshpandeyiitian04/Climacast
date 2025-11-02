@@ -19,9 +19,13 @@ import ErrorDisplay from "../common/errordisplay";
 import "./detailedview.css";
 
 const TemperatureChart = React.lazy(() => import("../charts/temperature"));
-const PrecipitationChart = React.lazy(() => import("../charts/precipitationchart"));
+const PrecipitationChart = React.lazy(() =>
+  import("../charts/precipitationchart")
+);
 const WindChart = React.lazy(() => import("../charts/windchart"));
-const HumidityPressureChart = React.lazy(() => import("../charts/humiditypressurechart"));
+const HumidityPressureChart = React.lazy(() =>
+  import("../charts/humiditypressurechart")
+);
 
 function DetailedView() {
   const { cityName } = useParams();
@@ -53,7 +57,7 @@ function DetailedView() {
     };
 
     loadData();
-  }, [cityName, dispatch, retryCount]);
+  }, [cityName, dispatch, retryCount]); // ← Fixed: removed weatherData?.data and forecastData?.data
 
   const handleRetry = () => {
     setRetryCount((prev) => prev + 1);
@@ -121,17 +125,28 @@ function DetailedView() {
     return (
       <>
         <Header />
-        <LoadingSpinner message="Preparing weather data..." size="large" />
+        <LoadingSpinner message="Preparing weather data for 24hr..." size="large" />
       </>
     );
   }
-
   const { location, current } = weatherData.data;
   const { forecast } = forecastData.data;
 
-  const allHours = forecast.forecastday.flatMap((day) => day.hour);
+  // FIX: सिर्फ़ यही 6 लाइनें बदलो
+  const todayHours = forecast.forecastday[0].hour;
+  const tomorrowHours = forecast.forecastday[1]?.hour || [];
   const currentHour = new Date().getHours();
-  const next24Hours = allHours.slice(currentHour, currentHour + 24);
+
+  const todayRemaining = todayHours.slice(currentHour);
+  const neededFromTomorrow = 24 - todayRemaining.length;
+  const next24Hours = [
+    ...todayRemaining,
+    ...tomorrowHours.slice(0, neededFromTomorrow),
+  ];
+
+  // पुराना हटाओ:
+  // const allHours = forecast.forecastday.flatMap((day) => day.hour);
+  // const next24Hours = allHours.slice(currentHour, currentHour + 24);
 
   return (
     <>
@@ -256,23 +271,35 @@ function DetailedView() {
           </div>
         </div>
 
-        <Suspense fallback={<LoadingSpinner message="Loading chart..." size="small" />}>
+        <Suspense
+          fallback={<LoadingSpinner message="Loading chart..." size="small" />}
+        >
           <TemperatureChart hourlyData={next24Hours} type="hourly" />
         </Suspense>
-        <Suspense fallback={<LoadingSpinner message="Loading chart..." size="small" />}>
+        <Suspense
+          fallback={<LoadingSpinner message="Loading chart..." size="small" />}
+        >
           <TemperatureChart dailyData={forecast.forecastday} type="daily" />
         </Suspense>
 
-        <Suspense fallback={<LoadingSpinner message="Loading chart..." size="small" />}>
+        <Suspense
+          fallback={<LoadingSpinner message="Loading chart..." size="small" />}
+        >
           <PrecipitationChart dailyData={forecast.forecastday} />
         </Suspense>
-        <Suspense fallback={<LoadingSpinner message="Loading chart..." size="small" />}>
+        <Suspense
+          fallback={<LoadingSpinner message="Loading chart..." size="small" />}
+        >
           <WindChart hourlyData={next24Hours} type="hourly" />
         </Suspense>
-        <Suspense fallback={<LoadingSpinner message="Loading chart..." size="small" />}>
+        <Suspense
+          fallback={<LoadingSpinner message="Loading chart..." size="small" />}
+        >
           <WindChart dailyData={forecast.forecastday} type="daily" />
         </Suspense>
-        <Suspense fallback={<LoadingSpinner message="Loading chart..." size="small" />}>
+        <Suspense
+          fallback={<LoadingSpinner message="Loading chart..." size="small" />}
+        >
           <HumidityPressureChart hourlyData={next24Hours} />
         </Suspense>
 

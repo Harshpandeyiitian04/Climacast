@@ -43,7 +43,7 @@ function Dashboard() {
           setLoadingFavorites(false);
         });
     }
-  }, [favorites.length]); 
+  }, [favorites.length]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -82,7 +82,9 @@ function Dashboard() {
   );
 
   if (loadingFavorites && cityNames.length === 0) {
-    return <LoadingSpinner message="Loading your favorite cities..." size="large" />;
+    return (
+      <LoadingSpinner message="Loading your favorite cities..." size="large" />
+    );
   }
 
   return (

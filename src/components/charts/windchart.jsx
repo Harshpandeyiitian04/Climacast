@@ -14,33 +14,41 @@ import "./chart.css";
 const WindChart = React.memo(({ hourlyData, dailyData, type = "hourly" }) => {
   const [hiddenLines, setHiddenLines] = useState({});
 
-  const hourlyChartData = useMemo(() => hourlyData?.map((hour) => ({
-    time: new Date(hour.time).toLocaleTimeString("en-US", {
-      hour: "numeric",
-      hour12: true,
-    }),
-    windSpeed: hour.wind_kph || 0,
-    windGust: hour.gust_kph || 0,
-    windDir: hour.wind_dir || "N/A",
-    fullTime: new Date(hour.time).toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-    }),
-  })), [hourlyData]);
+  const hourlyChartData = useMemo(
+    () =>
+      hourlyData?.map((hour) => ({
+        time: new Date(hour.time).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          hour12: true,
+        }),
+        windSpeed: hour.wind_kph || 0,
+        windGust: hour.gust_kph || 0,
+        windDir: hour.wind_dir || "N/A",
+        fullTime: new Date(hour.time).toLocaleString("en-US", {
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+        }),
+      })),
+    [hourlyData]
+  );
 
-  const dailyChartData = useMemo(() => dailyData?.map((day) => ({
-    date: new Date(day.date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    }),
-    maxWind: day.day.maxwind_kph || 0,
-    fullDate: new Date(day.date).toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    }),
-  })), [dailyData]);
+  const dailyChartData = useMemo(
+    () =>
+      dailyData?.map((day) => ({
+        date: new Date(day.date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        }),
+        maxWind: day.day.maxwind_kph || 0,
+        fullDate: new Date(day.date).toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        }),
+      })),
+    [dailyData]
+  );
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {

@@ -22,7 +22,12 @@ function SettingsPanel({ isOpen, onClose }) {
 
   return (
     <div className="settings-overlay" onClick={handleOverlayClick}>
-      <div className="settings-panel" role="dialog" aria-labelledby="settings-title" aria-modal="true">
+      <div
+        className="settings-panel"
+        role="dialog"
+        aria-labelledby="settings-title"
+        aria-modal="true"
+      >
         <div className="settings-header">
           <h2 id="settings-title">⚙️ Settings</h2>
           <button
@@ -44,7 +49,11 @@ function SettingsPanel({ isOpen, onClose }) {
               </p>
             </legend>
             <div className="setting-control">
-              <div className="toggle-group" role="radiogroup" aria-label="Temperature unit">
+              <div
+                className="toggle-group"
+                role="radiogroup"
+                aria-label="Temperature unit"
+              >
                 <button
                   type="button"
                   className={`toggle-option ${
@@ -58,7 +67,9 @@ function SettingsPanel({ isOpen, onClose }) {
                   aria-checked={temperatureUnit === "celsius"}
                   aria-label="Celsius"
                 >
-                  <span className="toggle-icon" aria-hidden="true">🌡️</span>
+                  <span className="toggle-icon" aria-hidden="true">
+                    🌡️
+                  </span>
                   <div>
                     <div className="toggle-label">Celsius</div>
                     <div className="toggle-sublabel">°C</div>
@@ -77,7 +88,9 @@ function SettingsPanel({ isOpen, onClose }) {
                   aria-checked={temperatureUnit === "fahrenheit"}
                   aria-label="Fahrenheit"
                 >
-                  <span className="toggle-icon" aria-hidden="true">🌡️</span>
+                  <span className="toggle-icon" aria-hidden="true">
+                    🌡️
+                  </span>
                   <div>
                     <div className="toggle-label">Fahrenheit</div>
                     <div className="toggle-sublabel">°F</div>
@@ -95,7 +108,11 @@ function SettingsPanel({ isOpen, onClose }) {
               </p>
             </legend>
             <div className="setting-control">
-              <div className="toggle-group" role="radiogroup" aria-label="Theme">
+              <div
+                className="toggle-group"
+                role="radiogroup"
+                aria-label="Theme"
+              >
                 <button
                   type="button"
                   className={`toggle-option ${
@@ -106,7 +123,9 @@ function SettingsPanel({ isOpen, onClose }) {
                   aria-checked={theme === "light"}
                   aria-label="Light theme"
                 >
-                  <span className="toggle-icon" aria-hidden="true">☀️</span>
+                  <span className="toggle-icon" aria-hidden="true">
+                    ☀️
+                  </span>
                   <div>
                     <div className="toggle-label">Light</div>
                     <div className="toggle-sublabel">Default theme</div>
@@ -123,7 +142,9 @@ function SettingsPanel({ isOpen, onClose }) {
                   aria-label="Dark theme"
                   disabled
                 >
-                  <span className="toggle-icon" aria-hidden="true">🌙</span>
+                  <span className="toggle-icon" aria-hidden="true">
+                    🌙
+                  </span>
                   <div>
                     <div className="toggle-label">Dark</div>
                     <div className="toggle-sublabel">Coming soon</div>
@@ -142,7 +163,9 @@ function SettingsPanel({ isOpen, onClose }) {
             </div>
             <div className="setting-info">
               <div className="info-badge" role="status">
-                <span className="badge-icon" aria-hidden="true">✓</span>
+                <span className="badge-icon" aria-hidden="true">
+                  ✓
+                </span>
                 <span>Enabled</span>
               </div>
             </div>
@@ -157,7 +180,9 @@ function SettingsPanel({ isOpen, onClose }) {
             </div>
             <div className="setting-info">
               <div className="info-badge" role="status">
-                <span className="badge-icon" aria-hidden="true">✓</span>
+                <span className="badge-icon" aria-hidden="true">
+                  ✓
+                </span>
                 <span>Active</span>
               </div>
             </div>

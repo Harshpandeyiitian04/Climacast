@@ -8,7 +8,7 @@ import {
 
 const weatherApi = axios.create({
   baseURL: API_CONFIG.baseUrl,
-  timeout: 10000, 
+  timeout: 10000,
 });
 
 weatherApi.interceptors.request.use(
@@ -29,10 +29,7 @@ weatherApi.interceptors.response.use(
   },
   (error) => {
     if (error.response) {
-      console.error(
-        `API Error ${error.response.status}:`,
-        error.response.data
-      );
+      console.error(`API Error ${error.response.status}:`, error.response.data);
     } else if (error.request) {
       console.error("No response from API:", error.message);
     } else {
@@ -66,7 +63,8 @@ function handleApiError(error, operation) {
         break;
       case 403:
         errorResponse.message = "Access forbidden";
-        errorResponse.details = "Your API key may not have required permissions";
+        errorResponse.details =
+          "Your API key may not have required permissions";
         break;
       case 404:
         errorResponse.message = "Location not found";
@@ -126,7 +124,7 @@ export async function getCurrentWeather(city) {
       params: {
         key: API_CONFIG.apiKey,
         q: city,
-        aqi: "yes", 
+        aqi: "yes",
       },
     });
 
@@ -172,7 +170,7 @@ export async function getForecast(city, days = 7) {
         q: city,
         days: validDays,
         aqi: "yes",
-        alerts: "yes", 
+        alerts: "yes",
       },
     });
 

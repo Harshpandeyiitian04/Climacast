@@ -6,7 +6,11 @@ export default function ErrorDisplay({ error, onRetry, onDismiss }) {
   const getErrorIcon = () => {
     if (error.retryable) return "🔄";
     if (error.message?.includes("not found")) return "🔍";
-    if (error.message?.includes("network") || error.message?.includes("connection")) return "📡";
+    if (
+      error.message?.includes("network") ||
+      error.message?.includes("connection")
+    )
+      return "📡";
     return "⚠️";
   };
 

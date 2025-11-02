@@ -1,4 +1,4 @@
-const CACHE_DURATION = 60 * 1000; 
+const CACHE_DURATION = 60 * 1000;
 const cache = new Map();
 
 export function getCachedData(key) {
@@ -48,7 +48,7 @@ export function getCacheStats() {
     const isExpired = age > CACHE_DURATION;
     stats.entries.push({
       key,
-      age: Math.round(age / 1000), 
+      age: Math.round(age / 1000),
       expired: isExpired,
     });
   });

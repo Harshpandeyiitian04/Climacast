@@ -17,7 +17,7 @@ export const fetchCurrentWeather = createAsyncThunk(
 
 export const fetchForecast = createAsyncThunk(
   "weather/fetchForecast",
-  async ({ city, days = 7 }, { rejectWithValue }) => { 
+  async ({ city, days = 7 }, { rejectWithValue }) => {
     try {
       const data = await getForecast(city, days);
       return { city, data };
@@ -80,17 +80,21 @@ const weatherSlice = createSlice({
       });
 
     builder
+      // weatherslice.js → पूरी तरह सही करो
       .addCase(fetchForecast.pending, (state, action) => {
-        const city = action.meta.arg.city;
-        state.forecasts[city] = {
-          ...state.forecasts[city],
+        const { city, days = 7 } = action.meta.arg;
+        const key = `${city.toLowerCase()}-${days}`;
+        state.forecasts[key] = {
+          ...state.forecasts[key],
           loading: true,
           error: null,
         };
       })
       .addCase(fetchForecast.fulfilled, (state, action) => {
         const { city, data } = action.payload;
-        state.forecasts[city] = {
+        const days = action.meta.arg.days || 7;
+        const key = `${city.toLowerCase()}-${days}`;
+        state.forecasts[key] = {
           data,
           loading: false,
           error: null,
@@ -98,9 +102,10 @@ const weatherSlice = createSlice({
         };
       })
       .addCase(fetchForecast.rejected, (state, action) => {
-        const city = action.meta.arg.city;
-        state.forecasts[city] = {
-          ...state.forecasts[city],
+        const { city, days = 7 } = action.meta.arg;
+        const key = `${city.toLowerCase()}-${days}`;
+        state.forecasts[key] = {
+          ...state.forecasts[key],
           loading: false,
           error: action.payload,
         };

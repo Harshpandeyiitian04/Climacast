@@ -27,20 +27,24 @@ const PrecipitationChart = React.memo(({ dailyData }) => {
     );
   }
 
-  const chartData = useMemo(() => dailyData.map((day) => ({
-    date: new Date(day.date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    }),
-    precipitation: day.day.totalprecip_mm || 0,
-    rainChance: day.day.daily_chance_of_rain || 0,
-    snowChance: day.day.daily_chance_of_snow || 0,
-    fullDate: new Date(day.date).toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    }),
-  })), [dailyData]);
+  const chartData = useMemo(
+    () =>
+      dailyData.map((day) => ({
+        date: new Date(day.date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        }),
+        precipitation: day.day.totalprecip_mm || 0,
+        rainChance: day.day.daily_chance_of_rain || 0,
+        snowChance: day.day.daily_chance_of_snow || 0,
+        fullDate: new Date(day.date).toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        }),
+      })),
+    [dailyData]
+  );
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -80,7 +84,11 @@ const PrecipitationChart = React.memo(({ dailyData }) => {
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-          <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.875rem" }} />
+          <XAxis
+            dataKey="date"
+            stroke="#666"
+            style={{ fontSize: "0.875rem" }}
+          />
           <YAxis
             yAxisId="left"
             stroke="#666"

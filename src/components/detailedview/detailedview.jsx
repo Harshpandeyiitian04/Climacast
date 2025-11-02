@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+// src/components/detailedview/DetailedView.jsx
+import React, { Suspense, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,213 +15,116 @@ import {
 import Header from "../layout/header";
 import HourlyForecast from "./hourlyforecast";
 import DailyForecast from "./dailyforecast";
-import TemperatureChart from "../charts/temperature";
-import PrecipitationChart from "../charts/precipitationchart";
-import WindChart from "../charts/\windchart";
-import HumidityPressureChart from "../charts/humiditypressurechart";
+import LoadingSpinner from "../common/loadingspinner";
 import "./detailedview.css";
 
-function DetailedView() {
+const TemperatureChart = React.lazy(() => import("../charts/temperature"));
+const PrecipitationChart = React.lazy(() => import("../charts/precipitationchart"));
+const WindChart = React.lazy(() => import("../charts/windchart"));
+const HumidityPressureChart = React.lazy(() => import("../charts/humiditypressurechart"));
+
+export default function DetailedView() {
   const { cityName } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const weatherData = useSelector(
-    (state) => state.weather.currentWeather[cityName]
-  );
-  const forecastData = useSelector(
-    (state) => state.weather.forecasts[cityName]
-  );
-  const temperatureUnit = useSelector(selectTemperatureUnit);
-  const isFavorite = useSelector(selectIsFavorite(cityName));
+  const cityKey = decodeURIComponent(cityName).trim().toLowerCase();
+  const forecastKey = `${cityKey}-7`;
 
+  const weather = useSelector((state) => state.weather.currentWeather[cityKey] || {});
+  const forecast = useSelector((state) => state.weather.forecasts[forecastKey] || {});
+
+  const unit = useSelector(selectTemperatureUnit);
+  const isFav = useSelector((state) => selectIsFavorite(cityKey)(state));
+
+  // FIX: Only dispatch if not loaded and not loading
   useEffect(() => {
-    if (!weatherData?.data) {
-      dispatch(fetchCurrentWeather(cityName));
+    if (!weather.data && !weather.loading) {
+      dispatch(fetchCurrentWeather(cityKey));
     }
-    if (!forecastData?.data) {
-      dispatch(fetchForecast({ city: cityName, days: 7 })); 
+    if (!forecast.data && !forecast.loading) {
+      dispatch(fetchForecast({ city: cityKey, days: 7 }));
     }
-  }, [cityName, dispatch, weatherData?.data, forecastData?.data]);
+  }, [dispatch, cityKey, weather.data, weather.loading, forecast.data, forecast.loading]);
 
-  if (weatherData?.loading || forecastData?.loading) {
-    return <div className="loading">Loading detailed weather data...</div>;
-  }
+  const toTemp = (c) => (unit === "fahrenheit" ? Math.round((c * 9) / 5 + 32) : Math.round(c));
+  const sym = unit === "celsius" ? "°C" : "°F";
 
-  if (weatherData?.error) {
+  if (!weather.data || !forecast.data) {
     return (
-      <div className="error-view">
-        <h2>Error loading weather data</h2>
-        <p>{weatherData.error}</p>
-        <button onClick={() => navigate("/")}>Back to Dashboard</button>
-      </div>
+      <>
+        <Header />
+        <LoadingSpinner message={`Loading ${cityKey}...`} size="large" />
+      </>
     );
   }
 
-  if (!weatherData?.data || !forecastData?.data) {
-    return <div className="loading">Loading...</div>;
-  }
-
-  const { location, current } = weatherData.data;
-  const { forecast } = forecastData.data;
-
-  const convertTemp = (tempC) => {
-    if (temperatureUnit === "fahrenheit") {
-      return Math.round((tempC * 9) / 5 + 32);
-    }
-    return Math.round(tempC);
-  };
-
-  const unitSymbol = temperatureUnit === "celsius" ? "°C" : "°F";
-
-  const handleToggleFavorite = () => {
-    if (isFavorite) {
-      dispatch(removeFavorite(cityName));
-    } else {
-      dispatch(addFavorite({ name: location.name, country: location.country }));
-    }
-  };
-
-  const allHours = forecast.forecastday.flatMap((day) => day.hour);
-  const currentHour = new Date().getHours();
-  const next24Hours = allHours.slice(currentHour, currentHour + 24);
+  const { location, current } = weather.data;
+  const { forecast: fc } = forecast.data;
+  const next24 = fc.forecastday.flatMap(d => d.hour).slice(new Date().getHours(), new Date().getHours() + 24);
 
   return (
     <>
       <Header />
       <div className="detailed-view">
         <div className="detailed-header">
-          <button className="back-btn" onClick={() => navigate("/")}>
-            ← Back
-          </button>
+          <button className="back-btn" onClick={() => navigate("/")}>Back</button>
           <button
-            className={`favorite-btn-detailed ${isFavorite ? "favorited" : ""}`}
-            onClick={handleToggleFavorite}
+            className={`favorite-btn-detailed ${isFav ? "favorited" : ""}`}
+            onClick={() => {
+              isFav
+                ? dispatch(removeFavorite(cityKey))
+                : dispatch(addFavorite({ name: location.name, country: location.country }));
+            }}
           >
-            {isFavorite ? "★ Favorited" : "☆ Add to Favorites"}
+            {isFav ? "Favorited" : "Add to Favorites"}
           </button>
         </div>
 
-        <div className="current-weather-detailed">
+        <section className="current-weather-detailed">
           <div className="location-info">
-            <h1>
-              {location.name}, {location.country}
-            </h1>
-            <p>{location.region}</p>
-            <p className="local-time">
-              Local Time:{" "}
-              {new Date(location.localtime).toLocaleString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-              })}
-            </p>
+            <h1>{location.name}, {location.country}</h1>
+            <p>{new Date(location.localtime).toLocaleString()}</p>
           </div>
-
           <div className="current-main">
-            <img
-              src={current.condition.icon}
-              alt={current.condition.text}
-              className="main-icon"
-            />
-            <div className="main-temp">
-              {convertTemp(current.temp_c)}
-              {unitSymbol}
-            </div>
+            <img src={current.condition.icon} alt={current.condition.text} className="main-icon" />
+            <div className="main-temp">{toTemp(current.temp_c)}{sym}</div>
             <p className="main-condition">{current.condition.text}</p>
-            <p className="feels-like">
-              Feels like {convertTemp(current.feelslike_c)}
-              {unitSymbol}
-            </p>
+            <p className="feels-like">Feels like {toTemp(current.feelslike_c)}{sym}</p>
           </div>
 
           <div className="detailed-metrics">
-            <div className="metric-card">
-              <div className="metric-icon">💧</div>
-              <div className="metric-content">
-                <p className="metric-label">Humidity</p>
-                <p className="metric-value">{current.humidity}%</p>
+            {[
+              { label: "Humidity", value: `${current.humidity}%` },
+              { label: "Wind", value: `${current.wind_kph} km/h`, sub: current.wind_dir },
+              { label: "Pressure", value: `${current.pressure_mb} mb` },
+              { label: "UV Index", value: current.uv },
+              { label: "Visibility", value: `${current.vis_km} km` },
+              { label: "Cloud", value: `${current.cloud}%` },
+              { label: "Dew Point", value: `${toTemp(current.dewpoint_c)}${sym}` },
+              { label: "Precip", value: `${current.precip_mm} mm` },
+            ].map((m, i) => (
+              <div key={i} className="metric-card">
+                <p className="metric-label">{m.label}</p>
+                <p className="metric-value">{m.value}</p>
+                {m.sub && <p className="metric-sub">{m.sub}</p>}
               </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">💨</div>
-              <div className="metric-content">
-                <p className="metric-label">Wind Speed</p>
-                <p className="metric-value">{current.wind_kph} km/h</p>
-                <p className="metric-sub">{current.wind_dir}</p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">🌡️</div>
-              <div className="metric-content">
-                <p className="metric-label">Pressure</p>
-                <p className="metric-value">{current.pressure_mb} mb</p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">☀️</div>
-              <div className="metric-content">
-                <p className="metric-label">UV Index</p>
-                <p className="metric-value">{current.uv}</p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">👁️</div>
-              <div className="metric-content">
-                <p className="metric-label">Visibility</p>
-                <p className="metric-value">{current.vis_km} km</p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">☁️</div>
-              <div className="metric-content">
-                <p className="metric-label">Cloud Cover</p>
-                <p className="metric-value">{current.cloud}%</p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">🌡️</div>
-              <div className="metric-content">
-                <p className="metric-label">Dew Point</p>
-                <p className="metric-value">
-                  {convertTemp(current.dewpoint_c)}
-                  {unitSymbol}
-                </p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">🌙</div>
-              <div className="metric-content">
-                <p className="metric-label">Precipitation</p>
-                <p className="metric-value">{current.precip_mm} mm</p>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
+        </section>
 
-        <TemperatureChart hourlyData={next24Hours} type="hourly" />
-        <TemperatureChart dailyData={forecast.forecastday} type="daily" />
+        <Suspense fallback={<LoadingSpinner size="small" />}>
+          <TemperatureChart hourlyData={next24} type="hourly" />
+          <TemperatureChart dailyData={fc.forecastday} type="daily" />
+          <PrecipitationChart dailyData={fc.forecastday} />
+          <WindChart hourlyData={next24} type="hourly" />
+          <WindChart dailyData={fc.forecastday} type="daily" />
+          <HumidityPressureChart hourlyData={next24} />
+        </Suspense>
 
-        <PrecipitationChart dailyData={forecast.forecastday} />
-        <WindChart hourlyData={next24Hours} type="hourly" />
-        <WindChart dailyData={forecast.forecastday} type="daily" />
-        <HumidityPressureChart hourlyData={next24Hours} />
-
-        <HourlyForecast hourlyData={next24Hours} />
-        <DailyForecast dailyData={forecast.forecastday} />
+        <HourlyForecast hourlyData={next24} />
+        <DailyForecast dailyData={fc.forecastday} />
       </div>
     </>
   );
 }
-
-export default DetailedView;
